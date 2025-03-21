@@ -1,3 +1,9 @@
+/**
+ * Author: R R
+ * Date: 2025-03-21
+ * Description: Calulator App
+ */
+
 import { useState } from "react";
 
 export default function Calculator() {
@@ -15,7 +21,7 @@ export default function Calculator() {
 
   const calculateResult = () => {
     try {
-      setResult(eval(input)); // Evaluating the input expression
+      setResult(eval(input));
     } catch {
       setResult("Error");
     }
@@ -71,6 +77,15 @@ export default function Calculator() {
           </button>
         </div>
       </div>
+      <footer>
+        <a href="#" target="_blank">
+          Privacy Policy
+        </a>{" "}
+        |
+        <a href="#" target="_blank">
+          Terms of Use
+        </a>
+      </footer>
     </div>
   );
 }
