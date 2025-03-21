@@ -78,11 +78,17 @@ export default function Calculator() {
         </div>
       </div>
       <footer>
-        <a href="#" target="_blank">
+        <a
+          href="https://github.com/roshithrg147/CalcAppRepo/blob/main/pages/privacy-policy.md"
+          target="_blank"
+        >
           Privacy Policy
         </a>{" "}
         |
-        <a href="#" target="_blank">
+        <a
+          href="https://github.com/roshithrg147/CalcAppRepo/blob/main/pages/terms-of-use.md"
+          target="_blank"
+        >
           Terms of Use
         </a>
       </footer>
