@@ -4,11 +4,40 @@
  * Description: Calulator App
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Calculator() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Pi) {
+      window.Pi.init({
+        version: "2.0",
+        sandbox: true,
+        onReady: () => {
+          console.log("Pi SDK initialized successfully.");
+        },
+        onError: (error) => {
+          console.error("Error initializing Pi SDK:", error);
+        },
+      });
+
+      window.Pi.authenticate(
+        ["username"],
+        function onIncompletePaymentFound(payment) {
+          console.log("Incomplete payment found:", payment);
+        },
+        { sandbox: true }
+      )
+        .then(function (auth) {
+          console.log("Authenticated user:", auth);
+        })
+        .catch(function (error) {
+          console.error("Authentication failed:", error);
+        });
+    }
+  }, []);
 
   const handleClick = (value) => {
     setInput((prev) => prev + value);
