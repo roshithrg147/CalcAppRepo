@@ -34,7 +34,7 @@ export default function App() {
       return;
     }
 
-    const scopes = ["payments"]; // Request permission for payments
+    const scopes = ["payments"];
     const onIncompletePaymentFound = (payment) => {
       console.log("Incomplete payment found:", payment);
     };
@@ -44,7 +44,61 @@ export default function App() {
         .then((auth) => {
           console.log("Authenticated user:", auth);
           setAuthData(auth);
-          setIsAuthenticated(true); // Proceed to calculator
+
+          // Request a Pi payment from the user
+          const paymentData = {
+            amount: 1, // Amount in Pi
+            memo: "Access fee for Calculator App",
+            metadata: { purpose: "App Access Fee" },
+          };
+
+          window.Pi.createPayment(
+            paymentData,
+            {
+              onReadyForServerApproval: (paymentId) => {
+                console.log("Payment ready for server approval:", paymentId);
+                fetch("/api/approve-payment", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ paymentId }),
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    if (data.success) {
+                      console.log("Payment approved by server.");
+                    } else {
+                      console.error("Server approval failed:", data.error);
+                    }
+                  });
+              },
+              onReadyForServerCompletion: (paymentId) => {
+                console.log("Payment ready for server completion:", paymentId);
+                fetch("/api/complete-payment", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ paymentId }),
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    if (data.success) {
+                      console.log("Payment completed successfully.");
+                      setIsAuthenticated(true); // Proceed to calculator
+                    } else {
+                      console.error("Server completion failed:", data.error);
+                    }
+                  });
+              },
+              onCancel: (paymentId) => {
+                console.log("Payment canceled:", paymentId);
+                alert("Payment was canceled. Please try again.");
+              },
+              onError: (error) => {
+                console.error("Payment error:", error);
+                alert("An error occurred during the payment process.");
+              },
+            },
+            { sandbox: false }
+          );
         })
         .catch((error) => {
           console.error("Authentication failed:", error);
